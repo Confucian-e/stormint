@@ -17,4 +17,12 @@ contract FreeMintTest is Test {
         freeMint.mint();
         assertEq(freeMint.balanceOf(alice), freeMint.MINT_AMOUNT());
     }
+
+    function testFail_doubleMint() public {
+        address alice = makeAddr("Alice");
+        vm.startPrank(alice, alice);
+
+        freeMint.mint();
+        freeMint.mint();
+    }
 }
