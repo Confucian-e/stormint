@@ -1,7 +1,6 @@
 name: Rust CI
 
 on:
-  workflow_dispatch:
   push:
     branches: [ "main" ]
     paths:
@@ -17,6 +16,7 @@ on:
       - "tests/**"
       - "Cargo.toml"
       - "Cargo.lock"
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
@@ -65,8 +65,8 @@ jobs:
           version: nightly
 
       - name: Build the contract artifacts
-        run: |
-          forge soldeer install && forge build
+        run: forge soldeer install && forge build
+        working-directory: contracts
 
       - name: Run tests
         run: cargo test --verbose
