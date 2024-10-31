@@ -1,12 +1,4 @@
 [account]
 mnemonic = "test test test test test test test test test test test junk"
-start_index = 1
-end_index = 100
-
-[distributor]
-sender = { private_key = "0x" }
-contract = { address = "0x881D40237659C251811CEC9c364ef91dC08D300C", artifact_path = "contracts/out/Distributor.sol/Distributor.json" }
-each_amount = "0.001"   # Ether
-
-[network]
-rpc_url = "http://localhost:8545"
+start_index = 100
+end_index = 200
