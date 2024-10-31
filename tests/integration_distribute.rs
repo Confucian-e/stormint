@@ -1,69 +1,69 @@
-use alloy::network::TransactionBuilder;
-use alloy::primitives::utils::parse_ether;
-use alloy::primitives::{Address, U256};
-use alloy::providers::{Provider, ProviderBuilder};
-use alloy::rpc::types::TransactionRequest;
+use alloy::{
+    network::{EthereumWallet, TransactionBuilder},
+    primitives::utils::parse_ether,
+    providers::{Provider, ProviderBuilder},
+    rpc::types::TransactionRequest,
+    signers::local::PrivateKeySigner,
+};
+use alloy_node_bindings::Anvil;
 use eyre::Result;
 
 mod common;
-use common::get_distributor_artifact;
+use common::{get_account_config, get_distributor_artifact};
+
+use stormint::account::generate_accounts;
+use stormint::distributor::{distribute, DistributeParam};
 
 #[tokio::test]
-async fn test_integration_distribute() -> Result<()> {
-    let (_abi, bytecode) = get_distributor_artifact()?;
-    // let (mnemonic, start_index, end_index) = get_account_config()?;
+async fn test_distribute() -> Result<()> {
+    let (abi, bytecode) = get_distributor_artifact()?;
+    let (mnemonic, start_index, end_index) = get_account_config()?;
 
-    // setup anvil node
-    let _provider = ProviderBuilder::new()
-        .with_recommended_fillers()
-        .on_anvil_with_wallet();
+    let anvil = Anvil::default().try_spawn()?;
+    let signer: PrivateKeySigner = anvil.keys()[0].clone().into();
+    let wallet = EthereumWallet::new(signer.clone());
+    let url = anvil.endpoint_url();
 
-    // deploy distributor contract
-    println!("Bytecode: {:?}", bytecode);
-
-    // TODO: Deploy failed because of out of gas, need fix this
-    // let deploy_tx = TransactionRequest::default().with_deploy_code(bytecode);
-    // let deploy_tx_hash = provider.send_transaction(deploy_tx).await?.watch().await?;
-    // let deploy_receipt = provider.get_transaction_receipt(deploy_tx_hash).await?.unwrap();
-    // let contract_address = deploy_receipt.contract_address.unwrap();
-    // println!("Distributor contract deployed at: {:?}", contract_address);
-
-    // // generate receiver accounts
-    // let receivers = generate_accounts(&mnemonic, start_index, end_index)?;
-    // let each_amount = parse_ether("0.001")?;
-    // let _params: Vec<DistributeParam> = receivers
-    //     .iter()
-    //     .map(|r| DistributeParam {
-    //         receiver: r.address(),
-    //         amount: each_amount,
-    //     })
-    //     .collect();
-
-    Ok(())
-}
-
-#[tokio::test]
-async fn test_transfer() -> Result<()> {
     let provider = ProviderBuilder::new()
         .with_recommended_fillers()
-        .on_anvil_with_wallet();
+        .wallet(wallet)
+        .on_http(url.clone());
 
-    let receiver = Address::random();
+    let deploy_tx = TransactionRequest::default().with_deploy_code(bytecode);
 
-    let balance = provider.get_balance(receiver).await?;
-
-    let value = parse_ether("1")?;
-    let tx = TransactionRequest::default()
-        .with_to(receiver)
-        .with_value(U256::from(value));
-
-    let _tx_hash = provider.send_transaction(tx)
+    let deploy_tx_hash = provider.send_transaction(deploy_tx).await?.watch().await?;
+    let deploy_receipt = provider
+        .get_transaction_receipt(deploy_tx_hash)
         .await?
-        .watch()
-        .await?;
+        .unwrap();
+    let contract_address = deploy_receipt.contract_address.unwrap();
 
-    let balance_change = provider.get_balance(receiver).await? - balance;
-    assert_eq!(balance_change, value);
+    // generate receiver accounts
+    let receivers = generate_accounts(&mnemonic, start_index, end_index)?;
+    let each_amount = parse_ether("0.001")?;
+    let params: Vec<DistributeParam> = receivers
+        .iter()
+        .map(|r| DistributeParam {
+            receiver: r.address(),
+            amount: each_amount,
+        })
+        .collect();
+
+    // distribute ether to receiver accounts
+    let distribute_tx = distribute(signer, url.clone(), abi, contract_address, params).await?;
+
+    // check distribute transaction
+    let distribute_receipt = provider
+        .get_transaction_receipt(distribute_tx)
+        .await?
+        .unwrap();
+    assert!(distribute_receipt.status());
+
+    // check balances
+    for receiver in receivers {
+        let balance = provider.get_balance(receiver.address()).await?;
+        assert_eq!(balance, each_amount);
+    }
 
     Ok(())
 }
