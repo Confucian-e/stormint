@@ -20,14 +20,21 @@ pub async fn distribute(
     contract_address: Address,
     params: Vec<DistributeParam>,
 ) -> Result<TxHash> {
-    let args = &params
-        .iter()
-        .map(|r| DynSolValue::CustomStruct {
-            name: "Transaction".to_string(),
-            prop_names: vec!["receiver".to_string(), "amount".to_string()],
-            tuple: vec![r.receiver.into(), r.amount.into()],
-        })
-        .collect::<Vec<DynSolValue>>();
+    let txns = DynSolValue::Array(
+        params
+            .iter()
+            .map(|r| {
+                DynSolValue::Tuple(vec![
+                    DynSolValue::from(r.receiver),
+                    DynSolValue::from(r.amount),
+                ])
+            })
+            .collect(),
+    );
+
+    let args = &[txns];
+
+    let value: U256 = params.iter().map(|param| param.amount).sum();
 
     let tx_hash = execute(
         sender,
@@ -36,6 +43,7 @@ pub async fn distribute(
         contract_address,
         "distributeEther",
         args,
+        Some(value),
     )
     .await?
     .tx_hash;
