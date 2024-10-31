@@ -3,7 +3,7 @@ use alloy::{
     dyn_abi::DynSolValue,
     json_abi::JsonAbi,
     network::{Ethereum, EthereumWallet},
-    primitives::{Address, TxHash},
+    primitives::{Address, TxHash, U256},
     providers::ProviderBuilder,
     signers::local::PrivateKeySigner,
     transports::http::{reqwest::Url, Client, Http},
@@ -29,6 +29,7 @@ pub async fn execute(
     contract_address: Address,
     function_name: &str,
     args: &[DynSolValue],
+    value: Option<U256>,
 ) -> Result<Execution> {
     let caller = account.address();
     let wallet = EthereumWallet::new(account);
@@ -42,6 +43,7 @@ pub async fn execute(
 
     let tx_hash = contract
         .function(function_name, args)?
+        .value(value.unwrap_or_default())
         .send()
         .await?
         .watch()
