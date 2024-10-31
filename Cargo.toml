@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-alloy = { version = "0.5.4", features = ["full", "signer-mnemonic", "eip712"] }
+alloy = { version = "0.5.4", features = ["full", "signer-mnemonic"] }
 tokio = { version = "1.41.0", features = ["full"] }
 eyre = "0.6.12"
 rayon = "1.10.0"
