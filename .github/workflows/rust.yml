@@ -65,7 +65,7 @@ jobs:
           version: nightly
 
       - name: Build the contract artifacts
-        run: forge soldeer install && forge build
+        run: forge soldeer install && forge update && forge build --sizes
         working-directory: contracts
 
       - name: Run tests
