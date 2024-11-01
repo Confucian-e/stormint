@@ -1,4 +1,4 @@
-use crate::common::{deploy_contract, parse_artifact, TestEnvironment};
+use crate::common::{deploy_contract, get_token_balance, parse_artifact, TestEnvironment};
 use alloy::dyn_abi::DynSolValue;
 use alloy::json_abi::JsonAbi;
 use alloy::primitives::{Address, U256};
@@ -36,7 +36,7 @@ async fn test_mint() -> Result<()> {
     // check balance
     for result in results {
         let balance =
-            get_balance(url.clone(), abi.clone(), contract_address, result.signer).await?;
+            get_token_balance(url.clone(), abi.clone(), contract_address, result.signer).await?;
         assert_eq!(balance, mint_amount);
     }
 
@@ -52,27 +52,4 @@ async fn get_mint_amount(url: Url, abi: JsonAbi, contract_address: Address) -> R
     };
 
     Ok(mint_amount)
-}
-
-async fn get_balance(
-    url: Url,
-    abi: JsonAbi,
-    contract_address: Address,
-    account: Address,
-) -> Result<U256> {
-    let balance = call(
-        url,
-        abi,
-        contract_address,
-        "balanceOf",
-        &[DynSolValue::from(account)],
-    )
-    .await?;
-
-    let balance = match balance.first() {
-        Some(DynSolValue::Uint(balance, 256)) => *balance,
-        _ => U256::default(),
-    };
-
-    Ok(balance)
 }
