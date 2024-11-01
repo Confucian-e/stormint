@@ -8,17 +8,19 @@ use alloy::{
 use alloy_node_bindings::Anvil;
 use eyre::Result;
 
-mod common;
-use common::{get_account_config, get_distributor_artifact};
-
 use stormint::account::generate_accounts;
 use stormint::distributor::{distribute, DistributeParam};
 
+mod common;
+use common::get_artifact;
+
+const ARTIFACT_PATH: &str = "contracts/out/Distributor.sol/Distributor.json";
+const MNEMONIC: &str = "test test test test test test test test test test test junk";
+const START_INDEX: u32 = 100;
+const END_INDEX: u32 = 200;
+
 #[tokio::test]
 async fn test_distribute() -> Result<()> {
-    let (abi, bytecode) = get_distributor_artifact()?;
-    let (mnemonic, start_index, end_index) = get_account_config()?;
-
     let anvil = Anvil::default().try_spawn()?;
     let signer: PrivateKeySigner = anvil.keys()[0].clone().into();
     let wallet = EthereumWallet::new(signer.clone());
@@ -29,17 +31,19 @@ async fn test_distribute() -> Result<()> {
         .wallet(wallet)
         .on_http(url.clone());
 
+    let (abi, bytecode) = get_artifact(ARTIFACT_PATH)?;
+
     let deploy_tx = TransactionRequest::default().with_deploy_code(bytecode);
 
     let deploy_tx_hash = provider.send_transaction(deploy_tx).await?.watch().await?;
-    let deploy_receipt = provider
+    let deploy_tx_receipt = provider
         .get_transaction_receipt(deploy_tx_hash)
         .await?
         .unwrap();
-    let contract_address = deploy_receipt.contract_address.unwrap();
+    let contract_address = deploy_tx_receipt.contract_address.unwrap();
 
     // generate receiver accounts
-    let receivers = generate_accounts(&mnemonic, start_index, end_index)?;
+    let receivers = generate_accounts(MNEMONIC, START_INDEX, END_INDEX)?;
     let each_amount = parse_ether("0.001")?;
     let params: Vec<DistributeParam> = receivers
         .iter()
