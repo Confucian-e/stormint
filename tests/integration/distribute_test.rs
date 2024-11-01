@@ -12,7 +12,7 @@ const END_INDEX: u32 = 200;
 
 #[tokio::test]
 async fn test_distribute() -> Result<()> {
-    let test_env = TestEnvironment::default()?;
+    let test_env = TestEnvironment::try_default()?;
     let (provider, url) = (test_env.provider, test_env.url);
     let signer = test_env.signers.first().unwrap().clone();
 
