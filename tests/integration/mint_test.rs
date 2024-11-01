@@ -1,9 +1,8 @@
 use alloy::dyn_abi::DynSolValue;
 use alloy::json_abi::JsonAbi;
-use alloy::network::{EthereumWallet, TransactionBuilder};
+use alloy::network::EthereumWallet;
 use alloy::primitives::{Address, U256};
-use alloy::providers::{Provider, ProviderBuilder};
-use alloy::rpc::types::TransactionRequest;
+use alloy::providers::ProviderBuilder;
 use alloy::signers::local::PrivateKeySigner;
 use alloy::transports::http::reqwest::Url;
 use alloy_node_bindings::Anvil;
@@ -12,7 +11,7 @@ use eyre::Result;
 use stormint::executor::call;
 use stormint::mint::mint_loop;
 
-use crate::common::parse_artifact;
+use crate::common::{deploy_contract, parse_artifact};
 
 const ARTIFACT_PATH: &str = "contracts/out/FreeMint.sol/FreeMint.json";
 
@@ -34,13 +33,7 @@ async fn test_mint() -> Result<()> {
 
     let (abi, bytecode) = parse_artifact(ARTIFACT_PATH)?;
 
-    let deploy_tx = TransactionRequest::default().with_deploy_code(bytecode);
-    let deploy_tx_hash = provider.send_transaction(deploy_tx).await?.watch().await?;
-    let deploy_tx_receipt = provider
-        .get_transaction_receipt(deploy_tx_hash)
-        .await?
-        .unwrap();
-    let contract_address = deploy_tx_receipt.contract_address.unwrap();
+    let contract_address = deploy_contract(provider.clone(), bytecode).await?;
 
     let accounts = vec![alice, bob];
     let results = mint_loop(
