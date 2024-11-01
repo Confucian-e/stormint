@@ -12,8 +12,7 @@ use eyre::Result;
 use stormint::executor::call;
 use stormint::mint::mint_loop;
 
-mod common;
-use common::get_artifact;
+use crate::common::parse_artifact;
 
 const ARTIFACT_PATH: &str = "contracts/out/FreeMint.sol/FreeMint.json";
 
@@ -33,7 +32,7 @@ async fn test_mint() -> Result<()> {
         .wallet(wallet)
         .on_http(url.clone());
 
-    let (abi, bytecode) = get_artifact(ARTIFACT_PATH)?;
+    let (abi, bytecode) = parse_artifact(ARTIFACT_PATH)?;
 
     let deploy_tx = TransactionRequest::default().with_deploy_code(bytecode);
     let deploy_tx_hash = provider.send_transaction(deploy_tx).await?.watch().await?;
