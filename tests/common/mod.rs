@@ -9,3 +9,6 @@ pub use deployer::deploy_contract;
 
 mod provider;
 pub use provider::TestEnvironment;
+
+mod balance;
+pub use balance::get_token_balance;

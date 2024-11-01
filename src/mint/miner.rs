@@ -14,7 +14,6 @@ pub struct MintResult {
 }
 
 impl MintResult {
-    // 添加构造函数
     fn new(signer: Address, tx: Result<TxHash, Report>) -> Self {
         Self { signer, result: tx }
     }
@@ -31,7 +30,7 @@ pub async fn mint_loop(
 ) -> Result<Vec<MintResult>> {
     let mut results: Vec<MintResult> = Vec::with_capacity(signers.len());
     for signer in &signers {
-        // 使用 &signers 避免不必要的 clone
+        // Use &signers to avoid unnecessary cloning
         let tx = execute_mint(
             signer.clone(),
             rpc_http.clone(),
