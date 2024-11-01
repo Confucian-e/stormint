@@ -1,16 +1,9 @@
-use alloy::{
-    network::EthereumWallet,
-    primitives::utils::parse_ether,
-    providers::{Provider, ProviderBuilder},
-    signers::local::PrivateKeySigner,
-};
-use alloy_node_bindings::Anvil;
+use crate::common::{deploy_contract, parse_artifact, TestEnvironment};
+use alloy::primitives::utils::parse_ether;
+use alloy::providers::Provider;
 use eyre::Result;
-
 use stormint::account::generate_accounts;
 use stormint::distributor::{distribute, DistributeParam};
-
-use crate::common::{deploy_contract, parse_artifact};
 
 const ARTIFACT_PATH: &str = "contracts/out/Distributor.sol/Distributor.json";
 const MNEMONIC: &str = "test test test test test test test test test test test junk";
@@ -19,15 +12,9 @@ const END_INDEX: u32 = 200;
 
 #[tokio::test]
 async fn test_distribute() -> Result<()> {
-    let anvil = Anvil::default().try_spawn()?;
-    let signer: PrivateKeySigner = anvil.keys()[0].clone().into();
-    let wallet = EthereumWallet::new(signer.clone());
-    let url = anvil.endpoint_url();
-
-    let provider = ProviderBuilder::new()
-        .with_recommended_fillers()
-        .wallet(wallet)
-        .on_http(url.clone());
+    let test_env = TestEnvironment::default()?;
+    let (provider, url) = (test_env.provider, test_env.url);
+    let signer = test_env.signers.first().unwrap().clone();
 
     let (abi, bytecode) = parse_artifact(ARTIFACT_PATH)?;
 

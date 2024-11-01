@@ -1,35 +1,20 @@
+use crate::common::{deploy_contract, parse_artifact, TestEnvironment};
 use alloy::dyn_abi::DynSolValue;
 use alloy::json_abi::JsonAbi;
-use alloy::network::EthereumWallet;
 use alloy::primitives::{Address, U256};
-use alloy::providers::ProviderBuilder;
-use alloy::signers::local::PrivateKeySigner;
 use alloy::transports::http::reqwest::Url;
-use alloy_node_bindings::Anvil;
 use eyre::Result;
-
 use stormint::executor::call;
 use stormint::mint::mint_loop;
-
-use crate::common::{deploy_contract, parse_artifact};
 
 const ARTIFACT_PATH: &str = "contracts/out/FreeMint.sol/FreeMint.json";
 
 #[tokio::test]
 async fn test_mint() -> Result<()> {
-    let anvil = Anvil::default().try_spawn()?;
-    let private_keys = anvil.keys();
+    let test_env = TestEnvironment::new(Some(3))?;
+    let (provider, url, signers) = (test_env.provider, test_env.url, test_env.signers);
 
-    let deployer: PrivateKeySigner = private_keys[0].clone().into();
-    let alice: PrivateKeySigner = private_keys[1].clone().into();
-    let bob: PrivateKeySigner = private_keys[2].clone().into();
-
-    let wallet = EthereumWallet::new(deployer.clone());
-    let url = anvil.endpoint_url();
-    let provider = ProviderBuilder::new()
-        .with_recommended_fillers()
-        .wallet(wallet)
-        .on_http(url.clone());
+    let (alice, bob) = (signers[1].clone(), signers[2].clone());
 
     let (abi, bytecode) = parse_artifact(ARTIFACT_PATH)?;
 
