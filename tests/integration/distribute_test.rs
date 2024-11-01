@@ -11,8 +11,7 @@ use eyre::Result;
 use stormint::account::generate_accounts;
 use stormint::distributor::{distribute, DistributeParam};
 
-mod common;
-use common::get_artifact;
+use crate::common::parse_artifact;
 
 const ARTIFACT_PATH: &str = "contracts/out/Distributor.sol/Distributor.json";
 const MNEMONIC: &str = "test test test test test test test test test test test junk";
@@ -31,7 +30,7 @@ async fn test_distribute() -> Result<()> {
         .wallet(wallet)
         .on_http(url.clone());
 
-    let (abi, bytecode) = get_artifact(ARTIFACT_PATH)?;
+    let (abi, bytecode) = parse_artifact(ARTIFACT_PATH)?;
 
     let deploy_tx = TransactionRequest::default().with_deploy_code(bytecode);
 

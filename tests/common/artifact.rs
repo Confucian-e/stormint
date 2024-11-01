@@ -3,7 +3,24 @@ use eyre::Result;
 use serde::Deserialize;
 use std::{env, fs};
 
-pub fn get_artifact(path: &str) -> Result<(JsonAbi, Vec<u8>)> {
+/// Reads and parses a JSON artifact file to extract the ABI and bytecode.
+///
+/// # Arguments
+///
+/// * `path` - A string slice that holds the path to the artifact file.
+///
+/// # Returns
+///
+/// A tuple containing the `JsonAbi` and the bytecode as a `Vec<u8>`.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// - The current directory cannot be retrieved.
+/// - The file cannot be read.
+/// - The file content cannot be parsed as JSON.
+/// - The bytecode cannot be decoded from hex.
+pub fn parse_artifact(path: &str) -> Result<(JsonAbi, Vec<u8>)> {
     let current_dir = env::current_dir()?;
 
     let file = current_dir.join(path);

@@ -1,2 +1,2 @@
 mod artifact;
-pub use artifact::get_artifact;
+pub use artifact::parse_artifact;
