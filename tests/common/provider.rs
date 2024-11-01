@@ -15,11 +15,10 @@ pub struct TestEnvironment {
 }
 
 impl TestEnvironment {
-    /// Generates a `TestEnvironment` with a single account.
-    pub fn default() -> Result<TestEnvironment> {
+    /// Generates a `TestProvider` along with its URL and a list of `PrivateKeySigner` instances.
+    pub fn try_default() -> Result<Self> {
         Self::new(None)
     }
-
     /// Generates a `TestProvider` along with its URL and a list of `PrivateKeySigner` instances.
     ///
     /// # Arguments
