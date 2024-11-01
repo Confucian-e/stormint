@@ -1,25 +1,9 @@
-use alloy::network::{Ethereum, EthereumWallet, TransactionBuilder};
+use crate::common::TestProvider;
+use alloy::network::TransactionBuilder;
 use alloy::primitives::Address;
-use alloy::providers::fillers::{
-    BlobGasFiller, ChainIdFiller, FillProvider, GasFiller, JoinFill, NonceFiller, WalletFiller,
-};
-use alloy::providers::{Identity, Provider, ReqwestProvider};
+use alloy::providers::Provider;
 use alloy::rpc::types::TransactionRequest;
-use alloy::transports::http::{Client, Http};
 use eyre::Result;
-
-type DeployProvider = FillProvider<
-    JoinFill<
-        JoinFill<
-            Identity,
-            JoinFill<GasFiller, JoinFill<BlobGasFiller, JoinFill<NonceFiller, ChainIdFiller>>>,
-        >,
-        WalletFiller<EthereumWallet>,
-    >,
-    ReqwestProvider,
-    Http<Client>,
-    Ethereum,
->;
 
 /// Deploys a contract using the provided provider and bytecode.
 ///
@@ -38,7 +22,7 @@ type DeployProvider = FillProvider<
 /// - The transaction cannot be sent.
 /// - The transaction receipt cannot be retrieved.
 /// - The contract address is not found in the receipt.
-pub async fn deploy_contract(provider: DeployProvider, bytecode: Vec<u8>) -> Result<Address> {
+pub async fn deploy_contract(provider: TestProvider, bytecode: Vec<u8>) -> Result<Address> {
     let deploy_tx = TransactionRequest::default().with_deploy_code(bytecode);
     let builder = provider.send_transaction(deploy_tx).await?;
 
