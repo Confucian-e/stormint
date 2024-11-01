@@ -3,14 +3,14 @@ use eyre::Result;
 use serde::Deserialize;
 use std::{env, fs};
 
-pub fn get_distributor_artifact() -> Result<(JsonAbi, Vec<u8>)> {
+pub fn get_artifact(path: &str) -> Result<(JsonAbi, Vec<u8>)> {
     let current_dir = env::current_dir()?;
-    let path = current_dir.join("contracts/out/Distributor.sol/Distributor.json");
 
-    let file = fs::read_to_string(path)?;
-    let content: Artifact = serde_json::from_str(&file)?;
+    let file = current_dir.join(path);
+    let content = fs::read_to_string(file)?;
+    let artifact: Artifact = serde_json::from_str(&content)?;
 
-    let (abi, bytecode) = (content.abi, content.bytecode.object);
+    let (abi, bytecode) = (artifact.abi, artifact.bytecode.object);
     let bytecode = hex::decode(&bytecode)?;
 
     Ok((abi, bytecode))
