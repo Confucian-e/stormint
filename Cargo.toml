@@ -2,7 +2,7 @@
 name = "stormint"
 version = "0.1.0"
 edition = "2021"
-authors = ["confucian confucian.e@gmail.com"]
+authors = ["confucian <confucian.e@gmail.com>"]
 description = "A blazing fast script that supports multi-account minting of FreeMint tokens."
 repository = "https://github.com/Confucian-e/stormint.git"
 readme = "README.md"
