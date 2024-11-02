@@ -1,4 +1,4 @@
-name: Publish Crate
+name: Publish
 
 on:
   push:
@@ -9,7 +9,33 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  publish:
+  publish-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog for release
+        uses: orhun/git-cliff-action@v3
+        id: git-cliff-release
+        with:
+          config: cliff.toml
+          args: -vv --latest --strip header
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.git-cliff-release.outputs.content }}
+          tag_name: ${{ github.ref_name }}
+
+  publish-crate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
