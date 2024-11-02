@@ -5,9 +5,10 @@ edition = "2021"
 authors = ["confucian <confucian.e@gmail.com>"]
 description = "A blazing fast script that supports multi-account minting of FreeMint tokens."
 repository = "https://github.com/Confucian-e/stormint.git"
+documentation = "https://docs.rs/stormint"
 readme = "README.md"
 license = "MIT"
-keywords = ["blockchain", "etheruem", "token", "mint"]
+keywords = ["blockchain", "ethereum", "token", "mint"]
 categories = ["cryptography::cryptocurrencies"]
 include = ["/src/*", "/Cargo.toml", "/README.md", "/LICENSE"]
 
