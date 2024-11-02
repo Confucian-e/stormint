@@ -9,7 +9,7 @@ readme = "README.md"
 license = "MIT"
 keywords = ["blockchain", "etheruem", "token", "mint"]
 categories = ["cryptography::cryptocurrencies"]
-include = ["src/*", "Cargo.toml", "README.md", "LICENSE"]
+include = ["/src/*", "/Cargo.toml", "/README.md", "/LICENSE"]
 
 [dependencies]
 alloy = { version = "0.5", features = ["full", "signer-mnemonic"] }
