@@ -41,6 +41,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "clippy"
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
@@ -49,6 +52,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "check"
       - name: Run check
         run: cargo check --verbose
 
@@ -58,6 +64,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "test"
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
