@@ -1,18 +1,38 @@
-use alloy::dyn_abi::DynSolValue;
-use alloy::json_abi::JsonAbi;
-use alloy::primitives::{Address, TxHash, U256};
-use alloy::signers::local::PrivateKeySigner;
-use alloy::transports::http::reqwest::Url;
+use crate::executor::execute;
+use alloy::{
+    dyn_abi::DynSolValue,
+    json_abi::JsonAbi,
+    primitives::{Address, TxHash, U256},
+    signers::local::PrivateKeySigner,
+    transports::http::reqwest::Url,
+};
 use eyre::Result;
 
-use crate::executor::execute;
-
+/// Parameters for the `distribute` function.
+///
+/// # Fields
+///
+/// * `receiver` - The address of the receiver.
+/// * `amount` - The amount to be distributed.
 #[derive(Debug)]
 pub struct DistributeParam {
     pub receiver: Address,
     pub amount: U256,
 }
 
+/// Distributes Ether to multiple receivers.
+///
+/// # Arguments
+///
+/// * `sender` - The private key signer of the sender.
+/// * `rpc_http` - The HTTP URL of the Ethereum RPC endpoint.
+/// * `abi` - The JSON ABI of the contract.
+/// * `contract_address` - The address of the contract.
+/// * `params` - A vector of `DistributeParam` containing receiver addresses and amounts.
+///
+/// # Returns
+///
+/// * `Result<TxHash>` - The transaction hash on success.
 pub async fn distribute(
     sender: PrivateKeySigner,
     rpc_http: Url,

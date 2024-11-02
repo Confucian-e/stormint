@@ -10,6 +10,12 @@ use alloy::{
 };
 use eyre::Result;
 
+/// Represents the result of a contract execution.
+///
+/// # Fields
+///
+/// * `caller` - The address of the caller.
+/// * `tx_hash` - The transaction hash of the executed transaction.
 #[derive(Debug)]
 pub struct Execution {
     pub caller: Address,
@@ -17,11 +23,36 @@ pub struct Execution {
 }
 
 impl Execution {
+    /// Creates a new `Execution` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `caller` - The address of the caller.
+    /// * `tx_hash` - The transaction hash of the executed transaction.
+    ///
+    /// # Returns
+    ///
+    /// * `Self` - A new `Execution` instance.
     fn new(caller: Address, tx_hash: TxHash) -> Self {
         Self { caller, tx_hash }
     }
 }
 
+/// Executes a function on an Ethereum smart contract.
+///
+/// # Arguments
+///
+/// * `account` - The private key signer of the account executing the transaction.
+/// * `rpc_http` - The HTTP URL of the Ethereum RPC endpoint.
+/// * `abi` - The JSON ABI of the contract.
+/// * `contract_address` - The address of the contract.
+/// * `function_name` - The name of the function to execute.
+/// * `args` - The arguments to pass to the function.
+/// * `value` - The amount of Ether to send with the transaction (optional).
+///
+/// # Returns
+///
+/// * `Result<Execution>` - The result of the contract execution, containing the caller's address and the transaction hash.
 pub async fn execute(
     account: PrivateKeySigner,
     rpc_http: Url,
