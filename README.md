@@ -32,14 +32,14 @@ Ensure you have [Rust](https://www.rust-lang.org/tools/install) installed. Then,
 cargo build --release
 ```
 
-### Foundry
+### Contracts
 
 Ensure you have [Foundry](https://getfoundry.sh/) installed. Then, run:
 
-
 ```bash
+git submodule update --init --recursive
+
 cd contracts/
-forge update
 forge soldeer install
 forge build
 ```
