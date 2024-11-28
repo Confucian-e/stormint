@@ -46,14 +46,14 @@ dependencies = [
  "alloy-contract",
  "alloy-core",
  "alloy-eips",
- "alloy-genesis 0.7.0",
+ "alloy-genesis",
  "alloy-network",
- "alloy-node-bindings 0.7.0",
+ "alloy-node-bindings",
  "alloy-provider",
  "alloy-pubsub",
  "alloy-rpc-client",
  "alloy-rpc-types",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "alloy-signer",
  "alloy-signer-local",
  "alloy-transport",
@@ -82,7 +82,7 @@ dependencies = [
  "alloy-eips",
  "alloy-primitives",
  "alloy-rlp",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "alloy-trie",
  "auto_impl",
  "c-kzg",
@@ -101,7 +101,7 @@ dependencies = [
  "alloy-eips",
  "alloy-primitives",
  "alloy-rlp",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "serde",
 ]
 
@@ -190,7 +190,7 @@ dependencies = [
  "alloy-eip7702",
  "alloy-primitives",
  "alloy-rlp",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "c-kzg",
  "derive_more",
  "once_cell",
@@ -200,23 +200,12 @@ dependencies = [
 
 [[package]]
 name = "alloy-genesis"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76b8fa6253466bd6f4b5ba3d725d350f7a05de494dd1b8d01537eafe934667e9"
-dependencies = [
- "alloy-primitives",
- "alloy-serde 0.6.0",
- "serde",
-]
-
-[[package]]
-name = "alloy-genesis"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4841e8dd4e0f53d76b501fd4c6bc21d95d688bc8ebf0ea359fc6c7ab65b48742"
 dependencies = [
  "alloy-primitives",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "serde",
 ]
 
@@ -260,7 +249,7 @@ dependencies = [
  "alloy-primitives",
  "alloy-rpc-types-any",
  "alloy-rpc-types-eth",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "alloy-signer",
  "alloy-sol-types",
  "async-trait",
@@ -280,25 +269,8 @@ dependencies = [
  "alloy-consensus",
  "alloy-eips",
  "alloy-primitives",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "serde",
-]
-
-[[package]]
-name = "alloy-node-bindings"
-version = "0.6.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9805d126f24be459b958973c0569c73e1aadd27d4535eee82b2b6764aa03616"
-dependencies = [
- "alloy-genesis 0.6.0",
- "alloy-primitives",
- "k256",
- "rand",
- "serde_json",
- "tempfile",
- "thiserror",
- "tracing",
- "url",
 ]
 
 [[package]]
@@ -307,7 +279,7 @@ version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3bce85f0f67b2248c2eb42941bb75079ac53648569a668e8bfd7de5a831ec64"
 dependencies = [
- "alloy-genesis 0.7.0",
+ "alloy-genesis",
  "alloy-primitives",
  "k256",
  "rand",
@@ -359,7 +331,7 @@ dependencies = [
  "alloy-json-rpc",
  "alloy-network",
  "alloy-network-primitives",
- "alloy-node-bindings 0.7.0",
+ "alloy-node-bindings",
  "alloy-primitives",
  "alloy-pubsub",
  "alloy-rpc-client",
@@ -468,7 +440,7 @@ dependencies = [
  "alloy-rpc-types-anvil",
  "alloy-rpc-types-engine",
  "alloy-rpc-types-eth",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "serde",
 ]
 
@@ -480,7 +452,7 @@ checksum = "2750f4f694b27461915b9794df60177198bf733da38dde71aadfbe2946a3c0be"
 dependencies = [
  "alloy-primitives",
  "alloy-rpc-types-eth",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "serde",
 ]
 
@@ -493,7 +465,7 @@ dependencies = [
  "alloy-consensus",
  "alloy-consensus-any",
  "alloy-rpc-types-eth",
- "alloy-serde 0.7.0",
+ "alloy-serde",
 ]
 
 [[package]]
@@ -506,7 +478,7 @@ dependencies = [
  "alloy-eips",
  "alloy-primitives",
  "alloy-rlp",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "derive_more",
  "serde",
  "strum",
@@ -524,21 +496,10 @@ dependencies = [
  "alloy-network-primitives",
  "alloy-primitives",
  "alloy-rlp",
- "alloy-serde 0.7.0",
+ "alloy-serde",
  "alloy-sol-types",
  "derive_more",
  "itertools 0.13.0",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "alloy-serde"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c9f13d8c9180dcced875f91f1876e428941cec151fc501637f68ad30d088d89"
-dependencies = [
- "alloy-primitives",
  "serde",
  "serde_json",
 ]
@@ -3001,7 +2962,7 @@ name = "stormint"
 version = "0.1.0"
 dependencies = [
  "alloy",
- "alloy-node-bindings 0.6.4",
+ "alloy-node-bindings",
  "eyre",
  "futures",
  "indicatif",
