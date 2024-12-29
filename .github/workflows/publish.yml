@@ -15,12 +15,12 @@ jobs:
       contents: write
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
 
       - name: Generate changelog for release
-        uses: orhun/git-cliff-action@v4
+        uses: orhun/git-cliff-action@4a4a951bc43fafe41cd2348d181853f52356bee7 # v4
         id: git-cliff-release
         with:
           config: cliff.toml
@@ -30,7 +30,7 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@e7a8f85e1c67a31e6ed99a94b41bd0b71bbee6b8 # v2
         with:
           body: ${{ steps.git-cliff-release.outputs.content }}
           tag_name: ${{ github.ref_name }}
@@ -38,7 +38,7 @@ jobs:
   publish-crate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
