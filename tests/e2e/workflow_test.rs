@@ -1,7 +1,6 @@
 use crate::common::{deploy_contract, get_token_balance, parse_artifact, TestEnvironment};
 use alloy::primitives::utils::parse_ether;
 use alloy::primitives::U256;
-use alloy::providers::Provider;
 use eyre::Result;
 use stormint::account::generate_accounts;
 use stormint::distributor::{distribute, DistributeParam};
@@ -26,8 +25,13 @@ async fn test_workflow() -> Result<()> {
     // generate receiver accounts
     let receivers = generate_accounts(MNEMONIC, START_INDEX, END_INDEX)?;
 
+    // deploy free mint token contract
+    let (free_mint_abi, bytecode) = parse_artifact("contracts/out/FreeMint.sol/FreeMint.json")?;
+    let mint_address = deploy_contract(provider.clone(), bytecode).await?;
+
     // deploy distributor contract
-    let (abi, bytecode) = parse_artifact("contracts/out/Distributor.sol/Distributor.json")?;
+    let (distribute_abi, bytecode) =
+        parse_artifact("contracts/out/Distributor.sol/Distributor.json")?;
     let distributor_address = deploy_contract(provider.clone(), bytecode).await?;
 
     // distribute ether to receiver accounts
@@ -41,19 +45,22 @@ async fn test_workflow() -> Result<()> {
         .collect();
 
     let sender = signers.first().unwrap().clone();
-    let tx_hash = distribute(sender, url.clone(), abi.clone(), distributor_address, param).await?;
+    let tx_hash = distribute(
+        sender,
+        url.clone(),
+        distribute_abi.clone(),
+        distributor_address,
+        param,
+    )
+    .await?;
     let receipt = provider.get_transaction_receipt(tx_hash).await?.unwrap();
     assert!(receipt.status());
-
-    // deploy mint contract
-    let (abi, bytecode) = parse_artifact("contracts/out/FreeMint.sol/FreeMint.json")?;
-    let mint_address = deploy_contract(provider.clone(), bytecode).await?;
 
     // mint tokens to receiver accounts
     let results = mint_loop(
         receivers,
         url.clone(),
-        abi.clone(),
+        free_mint_abi.clone(),
         mint_address,
         None,
         None,
@@ -63,8 +70,13 @@ async fn test_workflow() -> Result<()> {
 
     // check balances
     for result in results {
-        let token_balance =
-            get_token_balance(url.clone(), abi.clone(), mint_address, result.signer).await?;
+        let token_balance = get_token_balance(
+            url.clone(),
+            free_mint_abi.clone(),
+            mint_address,
+            result.signer,
+        )
+        .await?;
         assert!(token_balance > U256::from(0));
     }
 

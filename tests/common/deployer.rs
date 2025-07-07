@@ -1,7 +1,6 @@
 use crate::common::TestProvider;
 use alloy::network::TransactionBuilder;
 use alloy::primitives::Address;
-use alloy::providers::Provider;
 use alloy::rpc::types::TransactionRequest;
 use eyre::Result;
 

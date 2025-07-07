@@ -1,10 +1,10 @@
 use crate::common::TestProvider;
-use alloy::network::EthereumWallet;
 use alloy::providers::ProviderBuilder;
 use alloy::signers::local::PrivateKeySigner;
 use alloy::transports::http::reqwest::Url;
 use alloy_node_bindings::{Anvil, AnvilInstance};
 use eyre::Result;
+use std::sync::Arc;
 
 pub struct TestEnvironment {
     pub provider: TestProvider,
@@ -48,15 +48,13 @@ impl TestEnvironment {
             .collect();
 
         let deployer: PrivateKeySigner = private_keys[0].clone().into();
-        let wallet = EthereumWallet::new(deployer.clone());
         let url = anvil.endpoint_url();
         let provider = ProviderBuilder::new()
-            .with_recommended_fillers()
-            .wallet(wallet)
-            .on_http(url.clone());
+            .wallet(deployer)
+            .connect_http(url.clone());
 
         Ok(TestEnvironment {
-            provider,
+            provider: Arc::new(provider),
             url,
             signers,
             _anvil: anvil,

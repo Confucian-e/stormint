@@ -1,6 +1,5 @@
 use crate::common::{deploy_contract, parse_artifact, TestEnvironment};
 use alloy::primitives::utils::parse_ether;
-use alloy::providers::Provider;
 use eyre::Result;
 use stormint::account::generate_accounts;
 use stormint::distributor::{distribute, DistributeParam};

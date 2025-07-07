@@ -2,11 +2,11 @@ use alloy::{
     contract::{ContractInstance, Interface},
     dyn_abi::DynSolValue,
     json_abi::JsonAbi,
-    network::{Ethereum, EthereumWallet},
+    network::Ethereum,
     primitives::{Address, TxHash, U256},
     providers::ProviderBuilder,
     signers::local::PrivateKeySigner,
-    transports::http::{reqwest::Url, Client, Http},
+    transports::http::reqwest::Url,
 };
 use eyre::Result;
 
@@ -63,13 +63,11 @@ pub async fn execute(
     value: Option<U256>,
 ) -> Result<Execution> {
     let caller = account.address();
-    let wallet = EthereumWallet::new(account);
     let provider = ProviderBuilder::new()
-        .with_recommended_fillers()
-        .wallet(wallet)
-        .on_http(rpc_http);
+        .wallet(account)
+        .connect_http(rpc_http);
 
-    let contract: ContractInstance<Http<Client>, _, Ethereum> =
+    let contract: ContractInstance<_, Ethereum> =
         ContractInstance::new(contract_address, provider.clone(), Interface::new(abi));
 
     let tx_hash = contract

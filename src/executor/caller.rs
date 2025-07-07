@@ -28,9 +28,7 @@ pub async fn call(
     function_name: &str,
     args: &[DynSolValue],
 ) -> Result<Vec<DynSolValue>> {
-    let provider = ProviderBuilder::new()
-        .with_recommended_fillers()
-        .on_http(rpc_http);
+    let provider = ProviderBuilder::new().connect_http(rpc_http);
 
     let contract = ContractInstance::new(contract_address, provider.clone(), Interface::new(abi));
 
