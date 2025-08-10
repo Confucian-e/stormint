@@ -2,6 +2,13 @@
 name = "stormint"
 version = "0.1.0"
 edition = "2021"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+opt-level = "z"
 authors = ["confucian <confucian.e@gmail.com>"]
 description = "A blazing fast script that supports multi-account minting of FreeMint tokens."
 repository = "https://github.com/Confucian-e/stormint.git"
@@ -13,15 +20,15 @@ categories = ["cryptography::cryptocurrencies"]
 include = ["/src/*", "/Cargo.toml", "/README.md", "/LICENSE"]
 
 [dependencies]
-alloy = { version = "1.0", features = ["full", "signer-mnemonic"] }
-tokio = { version = "1.41", features = ["full"] }
+alloy = { version = "1.0", features = ["reqwest", "contract", "providers", "signers", "signer-mnemonic", "json-abi", "dyn-abi"], default-features = false }
+tokio = { version = "1.41", features = ["rt-multi-thread", "macros", "time"], default-features = false }
 eyre = "0.6"
 rayon = "1.10"
-indicatif = "0.18"
+indicatif = { version = "0.18", default-features = false }
 futures = "0.3"
 
 [dev-dependencies]
-alloy = { version = "1.0", features = ["provider-anvil-node", "getrandom"] }
+alloy = { version = "1.0", features = ["provider-anvil-node", "getrandom"], default-features = false }
 alloy-node-bindings = "1.0"
 serde = "1.0"
 serde_json = "1.0"
