@@ -28,7 +28,7 @@ use rayon::prelude::*;
 /// # fn main() -> eyre::Result<()> {
 /// let mnemonic = "test test test test test test test test test test test junk";
 /// let accounts = generate_accounts(mnemonic, 0, 10)?;
-/// 
+///
 /// println!("Generated {} accounts", accounts.len());
 /// for (i, account) in accounts.iter().enumerate() {
 ///     println!("Account {}: {}", i, account.address());
@@ -87,7 +87,7 @@ pub fn generate_accounts_internal(
     show_progress: bool,
 ) -> Result<Vec<PrivateKeySigner>> {
     let account_count = end_index - start_index;
-    
+
     // Optional progress bar only for non-test environments
     let pb = if show_progress {
         let pb = ProgressBar::new(account_count as u64);
@@ -170,9 +170,10 @@ mod tests {
     fn test_large_account_range() {
         let accounts = generate_accounts_internal(PHRASE, 10, 15, false).unwrap();
         assert_eq!(accounts.len(), 5);
-        
+
         // Check that all accounts are unique
-        let addresses: std::collections::HashSet<_> = accounts.iter().map(|a| a.address()).collect();
+        let addresses: std::collections::HashSet<_> =
+            accounts.iter().map(|a| a.address()).collect();
         assert_eq!(addresses.len(), 5);
     }
 
@@ -187,7 +188,7 @@ mod tests {
         // Test that the public function works, but hide progress for tests
         let accounts = generate_accounts_internal(PHRASE, 0, 2, false).unwrap();
         assert_eq!(accounts.len(), 2);
-        
+
         // Also verify the public API exists (this doesn't actually run during testing)
         let _ = std::panic::catch_unwind(|| {
             // This would show progress in actual usage
@@ -199,10 +200,10 @@ mod tests {
     fn test_different_ranges() {
         let accounts1 = generate_accounts_internal(PHRASE, 0, 3, false).unwrap();
         let accounts2 = generate_accounts_internal(PHRASE, 10, 13, false).unwrap();
-        
+
         assert_eq!(accounts1.len(), 3);
         assert_eq!(accounts2.len(), 3);
-        
+
         // Accounts from different ranges should be different
         for account1 in &accounts1 {
             for account2 in &accounts2 {

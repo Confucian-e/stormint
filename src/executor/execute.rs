@@ -169,38 +169,38 @@ pub async fn execute(
 mod tests {
     use super::*;
     use alloy::primitives::{address, TxHash};
-    
+
     #[test]
     fn test_execution_new() {
         let caller = address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
         let tx_hash = TxHash::default();
-        
+
         let execution = Execution::new(caller, tx_hash);
-        
+
         assert_eq!(execution.caller, caller);
         assert_eq!(execution.tx_hash, tx_hash);
     }
-    
+
     #[test]
     fn test_execution_debug() {
         let caller = address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
         let tx_hash = TxHash::default();
-        
+
         let execution = Execution::new(caller, tx_hash);
         let debug_str = format!("{:?}", execution);
-        
+
         assert!(debug_str.contains("Execution"));
         assert!(debug_str.contains("caller"));
         assert!(debug_str.contains("tx_hash"));
     }
-    
+
     #[test]
     fn test_execution_fields_access() {
         let caller = address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
         let tx_hash = TxHash::default();
-        
+
         let execution = Execution { caller, tx_hash };
-        
+
         // Test direct field access
         assert_eq!(execution.caller, caller);
         assert_eq!(execution.tx_hash, tx_hash);

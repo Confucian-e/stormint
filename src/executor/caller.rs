@@ -109,17 +109,19 @@ pub async fn call(
 #[cfg(test)]
 mod tests {
     use alloy::dyn_abi::DynSolValue;
-    
+
     #[test]
     fn test_empty_args() {
         let args: &[DynSolValue] = &[];
         assert_eq!(args.len(), 0);
     }
-    
+
     #[test]
     fn test_function_name_validation() {
         let function_name = "balanceOf";
         assert!(!function_name.is_empty());
-        assert!(function_name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_'));
+        assert!(function_name
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '_'));
     }
 }

@@ -1,5 +1,5 @@
-use stormint::account::generate_accounts_internal;
 use eyre::Result;
+use stormint::account::generate_accounts_internal;
 
 const VALID_PHRASE: &str = "test test test test test test test test test test test junk";
 
@@ -7,13 +7,13 @@ const VALID_PHRASE: &str = "test test test test test test test test test test te
 fn test_generate_accounts_internal_consistency() -> Result<()> {
     let accounts1 = generate_accounts_internal(VALID_PHRASE, 0, 5, false)?;
     let accounts2 = generate_accounts_internal(VALID_PHRASE, 0, 5, false)?;
-    
+
     assert_eq!(accounts1.len(), accounts2.len());
-    
+
     for (acc1, acc2) in accounts1.iter().zip(accounts2.iter()) {
         assert_eq!(acc1.address(), acc2.address());
     }
-    
+
     Ok(())
 }
 
@@ -21,17 +21,17 @@ fn test_generate_accounts_internal_consistency() -> Result<()> {
 fn test_generate_accounts_internal_different_ranges() -> Result<()> {
     let accounts1 = generate_accounts_internal(VALID_PHRASE, 0, 3, false)?;
     let accounts2 = generate_accounts_internal(VALID_PHRASE, 3, 6, false)?;
-    
+
     assert_eq!(accounts1.len(), 3);
     assert_eq!(accounts2.len(), 3);
-    
+
     // All accounts should be different
     for acc1 in &accounts1 {
         for acc2 in &accounts2 {
             assert_ne!(acc1.address(), acc2.address());
         }
     }
-    
+
     Ok(())
 }
 
@@ -51,15 +51,15 @@ fn test_generate_accounts_internal_invalid_range() -> Result<()> {
     Ok(())
 }
 
-#[test] 
+#[test]
 fn test_generate_accounts_internal_large_gap() -> Result<()> {
     // Test with a large gap between start and end
     let accounts = generate_accounts_internal(VALID_PHRASE, 1000, 1003, false)?;
     assert_eq!(accounts.len(), 3);
-    
+
     // Ensure they are unique
     let addresses: std::collections::HashSet<_> = accounts.iter().map(|a| a.address()).collect();
     assert_eq!(addresses.len(), 3);
-    
+
     Ok(())
 }

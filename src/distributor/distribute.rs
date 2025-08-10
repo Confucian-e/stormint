@@ -122,7 +122,9 @@ pub async fn distribute(
     let args = &[txns];
 
     // More efficient sum calculation
-    let value = params.iter().fold(U256::ZERO, |acc, param| acc + param.amount);
+    let value = params
+        .iter()
+        .fold(U256::ZERO, |acc, param| acc + param.amount);
 
     let tx_hash = execute(
         sender,
@@ -144,25 +146,25 @@ mod tests {
     use super::*;
     use alloy::primitives::{address, U256};
     // Test helper imports removed as they were unused
-    
+
     #[test]
     fn test_distribute_param_creation() {
         let receiver = address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
         let amount = U256::from(1000);
-        
+
         let param = DistributeParam { receiver, amount };
-        
+
         assert_eq!(param.receiver, receiver);
         assert_eq!(param.amount, amount);
     }
-    
+
     #[test]
     fn test_distribute_param_debug() {
         let param = DistributeParam {
             receiver: address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
             amount: U256::from(1000),
         };
-        
+
         let debug_str = format!("{:?}", param);
         assert!(debug_str.contains("DistributeParam"));
         // Address might be formatted differently in debug output
@@ -170,14 +172,16 @@ mod tests {
         assert!(debug_str.contains("amount"));
         assert!(debug_str.contains("1000"));
     }
-    
+
     #[test]
     fn test_empty_params_value_calculation() {
         let params: Vec<DistributeParam> = vec![];
-        let value = params.iter().fold(U256::ZERO, |acc, param| acc + param.amount);
+        let value = params
+            .iter()
+            .fold(U256::ZERO, |acc, param| acc + param.amount);
         assert_eq!(value, U256::ZERO);
     }
-    
+
     #[test]
     fn test_multiple_params_value_calculation() {
         let params = vec![
@@ -190,8 +194,10 @@ mod tests {
                 amount: U256::from(2000),
             },
         ];
-        
-        let value = params.iter().fold(U256::ZERO, |acc, param| acc + param.amount);
+
+        let value = params
+            .iter()
+            .fold(U256::ZERO, |acc, param| acc + param.amount);
         assert_eq!(value, U256::from(3000));
     }
 }

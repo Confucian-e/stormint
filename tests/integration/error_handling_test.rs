@@ -15,8 +15,13 @@ async fn test_distribute_with_insufficient_balance() -> Result<()> {
     let contract_address = deploy_contract(provider.clone(), bytecode).await?;
 
     // Generate receiver accounts
-    let receivers = generate_accounts_internal("test test test test test test test test test test test junk", 0, 2, false)?;
-    
+    let receivers = generate_accounts_internal(
+        "test test test test test test test test test test test junk",
+        0,
+        2,
+        false,
+    )?;
+
     // Try to distribute more ETH than the signer has
     let excessive_amount = parse_ether("1000000")?; // 1 million ETH
     let params: Vec<DistributeParam> = receivers
@@ -54,7 +59,7 @@ async fn test_distribute_with_empty_params() -> Result<()> {
     Ok(())
 }
 
-#[tokio::test] 
+#[tokio::test]
 async fn test_mint_with_already_minted_account() -> Result<()> {
     let test_env = TestEnvironment::new(Some(2))?;
     let (provider, url, signers) = (test_env.provider, test_env.url, test_env.signers);

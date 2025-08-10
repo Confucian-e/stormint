@@ -144,32 +144,36 @@ pub async fn mint_loop(
     let rpc_http = Arc::new(rpc_http);
     let abi = Arc::new(abi);
     let args = args.map(|a| Arc::new(a.to_vec()));
-    
+
     // Create futures for concurrent execution
-    let futures: Vec<_> = signers.into_iter().map(|signer| {
-        let rpc_http = Arc::clone(&rpc_http);
-        let abi = Arc::clone(&abi);
-        let args = args.as_ref().map(Arc::clone);
-        let signer_addr = signer.address();
-        
-        async move {
-            let tx = execute_mint(
-                signer,
-                (*rpc_http).clone(),
-                (*abi).clone(),
-                contract_address,
-                function_name,
-                args.as_ref().map(|a| a.as_slice()),
-                value,
-            ).await;
-            
-            MintResult::new(signer_addr, tx)
-        }
-    }).collect();
-    
+    let futures: Vec<_> = signers
+        .into_iter()
+        .map(|signer| {
+            let rpc_http = Arc::clone(&rpc_http);
+            let abi = Arc::clone(&abi);
+            let args = args.as_ref().map(Arc::clone);
+            let signer_addr = signer.address();
+
+            async move {
+                let tx = execute_mint(
+                    signer,
+                    (*rpc_http).clone(),
+                    (*abi).clone(),
+                    contract_address,
+                    function_name,
+                    args.as_ref().map(|a| a.as_slice()),
+                    value,
+                )
+                .await;
+
+                MintResult::new(signer_addr, tx)
+            }
+        })
+        .collect();
+
     // Execute all mints concurrently
     let results = join_all(futures).await;
-    
+
     Ok(results)
 }
 
@@ -221,46 +225,46 @@ mod tests {
     use super::*;
     use alloy::primitives::{address, TxHash};
     use eyre::eyre;
-    
+
     #[test]
     fn test_mint_result_new_success() {
         let signer = address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
         let tx_hash = TxHash::default();
         let result = Ok(tx_hash);
-        
+
         let mint_result = MintResult::new(signer, result);
-        
+
         assert_eq!(mint_result.signer, signer);
         assert!(mint_result.result.is_ok());
         assert_eq!(mint_result.result.unwrap(), tx_hash);
     }
-    
+
     #[test]
     fn test_mint_result_new_error() {
         let signer = address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
         let error = eyre!("Test error");
         let result = Err(error);
-        
+
         let mint_result = MintResult::new(signer, result);
-        
+
         assert_eq!(mint_result.signer, signer);
         assert!(mint_result.result.is_err());
     }
-    
+
     #[test]
     fn test_mint_result_debug() {
         let signer = address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
         let tx_hash = TxHash::default();
         let result = Ok(tx_hash);
-        
+
         let mint_result = MintResult::new(signer, result);
         let debug_str = format!("{:?}", mint_result);
-        
+
         assert!(debug_str.contains("MintResult"));
         assert!(debug_str.contains("signer"));
         assert!(debug_str.contains("result"));
     }
-    
+
     #[test]
     fn test_empty_signers_mint_loop() {
         // This would require async test setup, but we can test the basic structure

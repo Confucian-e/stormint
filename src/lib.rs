@@ -77,25 +77,25 @@
 //! ```
 
 /// Account generation and management functionality.
-/// 
+///
 /// This module provides functions for generating multiple Ethereum accounts
 /// from mnemonic phrases using hierarchical deterministic (HD) wallet derivation.
 pub mod account;
 
 /// Smart contract execution utilities.
-/// 
+///
 /// This module handles the execution of smart contract functions and provides
 /// both transaction execution and read-only contract calls.
 pub mod executor;
 
 /// Gas distribution functionality.
-/// 
+///
 /// This module provides efficient batch distribution of Ether to multiple
 /// recipient addresses using a specialized smart contract.
 pub mod distributor;
 
 /// Token minting operations.
-/// 
+///
 /// This module handles concurrent token minting across multiple accounts
 /// with comprehensive result tracking and error handling.
 pub mod mint;
