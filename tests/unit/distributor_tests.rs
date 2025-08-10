@@ -25,7 +25,7 @@ fn test_distribute_param_creation_and_access() {
 
 #[test]
 fn test_distribute_param_vector_operations() {
-    let params = vec![
+    let params = [
         DistributeParam {
             receiver: address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
             amount: U256::from(1000),
@@ -60,7 +60,7 @@ fn test_distribute_param_zero_amounts() {
 
     assert_eq!(param.amount, U256::ZERO);
 
-    let params = vec![param];
+    let params = [param];
     let total = params.iter().fold(U256::ZERO, |acc, p| acc + p.amount);
     assert_eq!(total, U256::ZERO);
 }

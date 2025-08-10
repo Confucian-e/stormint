@@ -70,7 +70,7 @@ async fn test_workflow() -> Result<()> {
 
     // check balances for successful mints
     for result in results {
-        if let Ok(_) = result.result {
+        if result.result.is_ok() {
             let token_balance = get_token_balance(
                 url.clone(),
                 free_mint_abi.clone(),

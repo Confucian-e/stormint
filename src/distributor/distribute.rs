@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn test_multiple_params_value_calculation() {
-        let params = vec![
+        let params = [
             DistributeParam {
                 receiver: address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
                 amount: U256::from(1000),

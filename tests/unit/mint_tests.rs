@@ -55,7 +55,7 @@ fn test_mint_result_debug_trait() {
 
 #[test]
 fn test_mint_result_vector_operations() {
-    let results = vec![
+    let results = [
         MintResult {
             signer: address!("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
             result: Ok(TxHash::from([1u8; 32])),
