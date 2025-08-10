@@ -1,7 +1,7 @@
 use crate::common::{deploy_contract, parse_artifact, TestEnvironment};
 use alloy::primitives::utils::parse_ether;
 use eyre::Result;
-use stormint::account::generate_accounts;
+use stormint::account::generate_accounts_internal;
 use stormint::distributor::{distribute, DistributeParam};
 
 const ARTIFACT_PATH: &str = "contracts/out/Distributor.sol/Distributor.json";
@@ -20,7 +20,7 @@ async fn test_distribute() -> Result<()> {
     let contract_address = deploy_contract(provider.clone(), bytecode).await?;
 
     // generate receiver accounts
-    let receivers = generate_accounts(MNEMONIC, START_INDEX, END_INDEX)?;
+    let receivers = generate_accounts_internal(MNEMONIC, START_INDEX, END_INDEX, false)?;
     let each_amount = parse_ether("0.001")?;
     let params: Vec<DistributeParam> = receivers
         .iter()

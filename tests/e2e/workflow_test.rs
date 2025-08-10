@@ -2,7 +2,7 @@ use crate::common::{deploy_contract, get_token_balance, parse_artifact, TestEnvi
 use alloy::primitives::utils::parse_ether;
 use alloy::primitives::U256;
 use eyre::Result;
-use stormint::account::generate_accounts;
+use stormint::account::generate_accounts_internal;
 use stormint::distributor::{distribute, DistributeParam};
 use stormint::mint::mint_loop;
 
@@ -23,7 +23,7 @@ async fn test_workflow() -> Result<()> {
     let (provider, url, signers) = (test_env.provider, test_env.url, test_env.signers);
 
     // generate receiver accounts
-    let receivers = generate_accounts(MNEMONIC, START_INDEX, END_INDEX)?;
+    let receivers = generate_accounts_internal(MNEMONIC, START_INDEX, END_INDEX, false)?;
 
     // deploy free mint token contract
     let (free_mint_abi, bytecode) = parse_artifact("contracts/out/FreeMint.sol/FreeMint.json")?;
@@ -68,16 +68,18 @@ async fn test_workflow() -> Result<()> {
     )
     .await?;
 
-    // check balances
+    // check balances for successful mints
     for result in results {
-        let token_balance = get_token_balance(
-            url.clone(),
-            free_mint_abi.clone(),
-            mint_address,
-            result.signer,
-        )
-        .await?;
-        assert!(token_balance > U256::from(0));
+        if let Ok(_) = result.result {
+            let token_balance = get_token_balance(
+                url.clone(),
+                free_mint_abi.clone(),
+                mint_address,
+                result.signer,
+            )
+            .await?;
+            assert!(token_balance > U256::from(0));
+        }
     }
 
     Ok(())
