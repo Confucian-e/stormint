@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate changelog for release
-        uses: orhun/git-cliff-action@v4
+        uses: orhun/git-cliff-action@c93ef52f3d0ddcdcc9bd5447d98d458a11cd4f72 # v4
         id: git-cliff-release
         with:
           config: cliff.toml
@@ -30,7 +30,7 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:
           body: ${{ steps.git-cliff-release.outputs.content }}
           tag_name: ${{ github.ref_name }}
