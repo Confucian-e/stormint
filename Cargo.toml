@@ -28,7 +28,7 @@ indicatif = { version = "0.18", default-features = false }
 futures = "0.3"
 
 [dev-dependencies]
-alloy = { version = "1.0", features = ["provider-anvil-node", "getrandom"], default-features = false }
-alloy-node-bindings = "1.0"
-serde = "1.0"
-serde_json = "1.0"
+alloy = { version = "=1.7.3", features = ["provider-anvil-node", "getrandom"], default-features = false }
+alloy-node-bindings = "=1.7.3"
+serde = "=1.0.228"
+serde_json = "=1.0.149"
