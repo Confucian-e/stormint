@@ -20,7 +20,7 @@ strip = true
 opt-level = "z"
 
 [dependencies]
-alloy = { version = "1.0", features = ["reqwest", "contract", "providers", "signers", "signer-mnemonic", "json-abi", "dyn-abi"], default-features = false }
+alloy = { version = "2.0", features = ["reqwest", "contract", "providers", "signers", "signer-mnemonic", "json-abi", "dyn-abi"], default-features = false }
 tokio = { version = "1.41", features = ["rt-multi-thread", "macros", "time"], default-features = false }
 eyre = "0.6"
 rayon = "1.10"
@@ -28,7 +28,7 @@ indicatif = { version = "0.18", default-features = false }
 futures = "0.3"
 
 [dev-dependencies]
-alloy = { version = "1.0", features = ["provider-anvil-node", "getrandom"], default-features = false }
+alloy = { version = "2.0", features = ["provider-anvil-node", "getrandom"], default-features = false }
 alloy-node-bindings = "1.0"
 serde = "1.0"
 serde_json = "1.0"
